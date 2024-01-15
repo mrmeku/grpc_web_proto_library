@@ -1,6 +1,6 @@
 {
   "lockFileVersion": 3,
-  "moduleFileHash": "8970ad54ab0b279f95cccba51464990529691560d111679a6ccb7ad5b97189a6",
+  "moduleFileHash": "de0a191e042e68e4ccd35f43b906e9f65e45b4a3bf7f14338d2bdb339d8747f9",
   "flags": {
     "cmdRegistries": [
       "https://bcr.bazel.build/"
@@ -13,6 +13,7 @@
     "compatibilityMode": "ERROR"
   },
   "localOverrideHashes": {
+    "external_proto": "c686ce85f021643d8a79f604a01fa9bd6d1bdbde28d3f605f184870e7bce5321",
     "bazel_tools": "922ea6752dc9105de5af957f7a99a6933c0a6a712d23df6aad16a9c399f7e787"
   },
   "moduleDepGraph": {
@@ -85,6 +86,7 @@
         "com_google_protobuf": "protobuf@21.7",
         "rules_proto": "rules_proto@6.0.0-rc1",
         "rules_cc": "rules_cc@0.0.9",
+        "external_proto": "external_proto@_",
         "bazel_tools": "bazel_tools@_",
         "local_config_platform": "local_config_platform@_"
       }
@@ -544,6 +546,20 @@
           },
           "remote_patch_strip": 0
         }
+      }
+    },
+    "external_proto@_": {
+      "name": "external_proto",
+      "version": "",
+      "key": "external_proto@_",
+      "repoName": "external_proto",
+      "executionPlatformsToRegister": [],
+      "toolchainsToRegister": [],
+      "extensionUsages": [],
+      "deps": {
+        "rules_proto": "rules_proto@6.0.0-rc1",
+        "bazel_tools": "bazel_tools@_",
+        "local_config_platform": "local_config_platform@_"
       }
     },
     "bazel_tools@_": {

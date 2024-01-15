@@ -17,6 +17,8 @@ syntax = "proto3";
 package grpc.gateway.testing;
 
 import "google/protobuf/empty.proto";
+// private/external_proto/external.proto
+import "external.proto";
 
 message EchoRequest {
   string message = 1;
@@ -25,6 +27,7 @@ message EchoRequest {
 message EchoResponse {
   string message = 1;
   int32 message_count = 2;
+  external.proto.External external = 3;
 }
 
 // Request type for server side streaming echo.

@@ -1,0 +1,7 @@
+"Repo which allows for exercising logic of depending on protos from external repositories"
+
+module(
+    name = "external_proto",
+)
+
+bazel_dep(name = "rules_proto", version = "6.0.0-rc1")

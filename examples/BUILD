@@ -7,7 +7,10 @@ proto_library(
         "echo.proto",
     ],
     visibility = ["//visibility:public"],
-    deps = ["@com_google_protobuf//:empty_proto"],
+    deps = [
+        "@com_google_protobuf//:empty_proto",
+        "@external_proto",
+    ],
 )
 
 grpc_web_proto_library(

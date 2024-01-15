@@ -2,18 +2,6 @@ load("@aspect_rules_js//js:providers.bzl", "JsInfo", "js_info")
 load("@bazel_skylib//lib:paths.bzl", "paths")
 load("@rules_proto//proto:defs.bzl", "ProtoInfo")
 
-def _get_proto_import_paths(proto_info):
-    source_root = proto_info.proto_source_root
-    if "." == source_root:
-        return [src.path for src in proto_info.direct_sources]
-
-    offset = len(source_root) + 1  # + '/'.
-
-    import_paths = []
-    for src in proto_info.direct_sources:
-        import_paths.append(src.path[offset:])
-    return import_paths
-
 def _create_protoc_command(proto_info, ctx):
     protoc_command = "%s" % (ctx.executable._protoc.path)
     protoc_command += " --plugin=protoc-gen-js=%s" % (ctx.executable._protoc_gen_js.path)
@@ -26,14 +14,13 @@ def _create_protoc_command(proto_info, ctx):
     descriptor_sets_paths = [desc.path for desc in proto_info.transitive_descriptor_sets.to_list()]
     protoc_command += " --descriptor_set_in=\"%s\"" % (ctx.configuration.host_path_separator.join(descriptor_sets_paths))
 
-    proto_import_paths = _get_proto_import_paths(proto_info)
-    for import_path in proto_import_paths:
-        protoc_command += " %s" % import_path
+    for source in [src.path for src in proto_info.direct_sources]:
+        protoc_command += " %s" % source
 
     return protoc_command
 
 def _create_post_process_command(ctx, sources):
-    command = ctx.executable._post_process.path + " "
+    command = ctx.executable._post_process.path
     for output in sources:
         command += " {}".format(output.short_path)
     return command
@@ -59,25 +46,23 @@ def _declare_outputs(proto_info, ctx):
 def _grpc_web_proto_library_aspect(target, ctx):
     proto_info = target[ProtoInfo]
     outputs = _declare_outputs(proto_info, ctx)
-    protoc_outputs = outputs.declarations + outputs.sources
-
-    tools = []
-    tools.extend(ctx.files._protoc)
-    tools.extend(ctx.files._protoc_gen_grpc_web)
-    tools.extend(ctx.files._protoc_gen_js)
-    tools.extend(ctx.files._post_process)
 
     ctx.actions.run_shell(
         inputs = depset(
             direct = proto_info.direct_sources + proto_info.transitive_descriptor_sets.to_list(),
             transitive = [depset(ctx.files._well_known_protos)],
         ),
-        outputs = protoc_outputs,
+        outputs = outputs.declarations + outputs.sources,
         command = " && ".join([
             _create_protoc_command(proto_info, ctx),
             _create_post_process_command(ctx, outputs.sources),
         ]),
-        tools = depset(tools),
+        tools = depset(
+            ctx.files._protoc +
+            ctx.files._protoc_gen_grpc_web +
+            ctx.files._protoc_gen_js +
+            ctx.files._post_process,
+        ),
         env = {
             "BAZEL_BINDIR": ctx.bin_dir.path,
         },

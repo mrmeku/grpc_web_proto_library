@@ -1,0 +1,31 @@
+"mrmeku/grpc_web_proto_library"
+
+module(
+    name = "grpc_web_proto_library",
+)
+
+bazel_dep(name = "aspect_rules_js", version = "1.35.0")
+bazel_dep(name = "bazel_skylib", version = "1.5.0")
+bazel_dep(name = "aspect_bazel_lib", version = "2.3.0")
+bazel_dep(name = "protobuf", version = "21.7", dev_dependency = True, repo_name = "com_google_protobuf")
+bazel_dep(name = "rules_proto", version = "6.0.0-rc1")
+bazel_dep(name = "rules_cc", version = "0.0.9")
+
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "com_google_protobuf_javascript",
+    strip_prefix = "protobuf-javascript-3.21.2",
+    urls = [
+        "https://github.com/protocolbuffers/protobuf-javascript/archive/refs/tags/v3.21.2.tar.gz",
+    ],
+    integrity = "sha256-NbyhcpUysKdygL8oq1k3Q449zM1rMaKC2a6EyJa29uM=",
+)
+
+http_archive(
+    name = "com_github_grpc_grpc_web",
+    integrity = "sha256-0wQ2M/HChCiOmORMgChgynIDxzdriVcrX1qeN2wjktU=",
+    strip_prefix = "grpc-web-1.5.0",
+    urls = [
+        "https://github.com/grpc/grpc-web/archive/1.5.0.tar.gz",
+    ],
+)
